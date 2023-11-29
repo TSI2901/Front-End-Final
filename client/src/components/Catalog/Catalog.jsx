@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react'
-
-
+import CatalogItem from '../CatalogItem/CatalogItem';
+import './Catalog.css'
 function Catalog() {
-    const [students, setStudents] = useState([]);
+    const [movies, setMovies] = useState([]);
 
-    useEffect(()=>{
-        fetch(`http://localhost:3030/jsonstore`)
-        .then(response => response.json())
-        .then(data => {
-            setStudents(Object.values(data))
-        })
-        .catch(err => console.log(err))
-    },[])
-    console.log(students)
+    
 
     return(
-        <h1>catalog</h1>
+        <div className="catalog">
+            
+            {movies.map(movie =(
+                <CatalogItem
+                key ={movie.Id}
+                Id = {movie.Id}
+                imgUrl = {movie.ImgUrl}
+                title={movie.title}
+                duration={movie.duration}
+                categoty={movie.categoty}
+                />
+            ))}
+            
+        </div>
     )
 }
 export default Catalog
