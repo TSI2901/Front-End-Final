@@ -1,0 +1,7 @@
+.item{
+    display: flex;
+    border: solid red 2px;
+    gap: 1em;
+    flex-direction: column;
+    padding: 2em;
+}
