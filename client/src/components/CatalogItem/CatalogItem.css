@@ -4,4 +4,10 @@
     gap: 1em;
     flex-direction: column;
     padding: 2em;
+    width: 30%;
+}
+.item img{
+    width: 30%;
+    height: 20%;
+    align-self: center;
 }

@@ -6,6 +6,15 @@
     align-items: center;
     border: solid white 2px;
     padding: 1em;
-    gap: 2em;
-    flex-wrap: wrap;
+    gap: 1em;
+    flex-wrap: nowrap;
+}
+.con{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.con button{
+    align-self: center;
+    
 }

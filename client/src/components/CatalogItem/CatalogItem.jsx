@@ -3,16 +3,14 @@ import './CatalogItem.css'
 export default function CatalogItem({
     title,
     imgUrl,
-    duration,
-    categoty
+    createdOn
 }){
 
     return(
         <div className="item">
             <img src={imgUrl} alt={title}></img>
             <h5>{title}</h5>
-            <p>Duration: {duration}</p>
-            <p>{categoty}</p>
+            <p>Created On: {Date(createdOn)}</p>
         </div>
     )
 }
