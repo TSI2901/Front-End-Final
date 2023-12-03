@@ -1,3 +1,6 @@
+import { formatDate } from "../utils/dataUtil";
+import { uniqueID } from "../utils/idUtil";
+
 const baseUrl = 'http://localhost:3030/data/movies';
 
 export const getAll = async () => {
@@ -18,11 +21,12 @@ export const getOne = async (movieId) => {
 
 export const create = async (data) => {
     const body = {
+        _id: uniqueID,
         _ownerId: data.ownerId,
         title: data.title,
         description: data.description,
         img: data.img,
-        _createdOn: new Date(data.createdOn),
+        _createdOn: formatDate(data._createdOn),
         _id: data.id
     };
 
