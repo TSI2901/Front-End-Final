@@ -3,12 +3,19 @@ import CatalogItem from '../CatalogItem/CatalogItem';
 import './Catalog.css'
 import * as request from '../../lib/requests';
 import AddMovie from '../Add/Add';
+import MovieDetails from '../Details/Details.jsx';
+import { formatDate } from '../../utils/dataUtil.js';
+import { uniqueID } from '../../utils/idUtil.js';
+
  
 
 function Catalog() {
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [showCreate, setShowCreate] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
     
     useEffect(() => {
         setIsLoading(true);
@@ -19,7 +26,11 @@ function Catalog() {
             .finally(() => setIsLoading(false));
     }, []);
     console.log(movies)
-
+    
+    const movieInfoClickHandler = async (movieId) => {
+        setSelectedMovie(movieId);
+        setShowInfo(true);
+    };
    
     const createUserClickHandler = () => {
         setShowCreate(true);
@@ -28,6 +39,7 @@ function Catalog() {
     const movieCreateHandler = async (e) => {
         // Stop page from refreshing
         e.preventDefault();
+
 
         // Get data from form data
         const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -52,9 +64,12 @@ function Catalog() {
             
             {movies.map(movie =>(
                 <CatalogItem
+                key={movie._id}
                 title={movie.title}
                 imgUrl = {movie.img}
-                createdOn={movie._createdOn}
+                id = {movie._id}
+                createdOn={formatDate(movie._createdOn)}
+                onInfoClick={movieInfoClickHandler}
                 />
             ))}
 
@@ -67,6 +82,12 @@ function Catalog() {
                 onCreate={movieCreateHandler}
             />
             )}  
+        {showInfo && (
+                <MovieDetails
+                    onClose={() => setShowInfo(false)}
+                    movieId={selectedMovie}
+                />
+            )}
         <button className="btn-add btn" onClick={createUserClickHandler}>Add new movie</button>
         </div>
     )
