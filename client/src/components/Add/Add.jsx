@@ -1,72 +1,61 @@
+import { create } from '../../services/movieService.js';
+import { useNavigate } from 'react-router-dom';
+import {useContext} from "react";
+import AuthContext from "../../context/authContext";
+import { uniqueID } from '../../utils/idUtil.js';
+import './Add.css'
+export default function Create(){
+    const navigate = useNavigate();
+    const { userId } = useContext(AuthContext);
+    console.log(userId);    
 
-export default function AddMovie({
-    onClose,
-    onCreate,
-})
-{
-    return (
-        <div className="overlay" >
-            <div className="backdrop" onClick={onClose}></div>
-            <div className="modal">
-                <div className="movie-container">
-                    <header className="headers">
-                        <h2>Add User</h2>
-                        <button className="btn close" onClick={onClose}>
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
-                                className="svg-inline--fa fa-xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                <path fill="currentColor"
-                                    d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z">
-                                </path>
-                            </svg>
-                        </button>
-                    </header>
-                    <form onSubmit={onCreate}>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="title">Title</label>
-                                <div className="input-wrapper">
-                                    <span><i className="fa-solid fa-user"></i></span>
-                                    <input id="title" name="title" type="text" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="description">Description</label>
-                                <div className="input-wrapper">
-                                    <span><i className="fa-solid fa-user"></i></span>
-                                    <input id="description" name="description" type="text" />
-                                </div>
-                            </div>
-                        </div>
+    const movieSubmitHandler = async (values) => {
+        event.preventDefault();
+        const tempData = Object.fromEntries(new FormData(values.currentTarget));
+        const movieData = {
+                title: tempData.title,
+                description: tempData.description,
+                img: tempData.img,
+                _ownerId: userId,
+                _createdOn: new Date().toISOString()
+        }
+        console.log(movieData);
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="img">Image URL</label>
-                                <div className="input-wrapper">
-                                    <span><i className="fa-solid fa-envelope"></i></span>
-                                    <input id="img" name="img" type="text" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="_createdOn">Created On: </label>
-                                <div className="input-wrapper">
-                                    <span><i className="fa-solid fa-phone"></i></span>
-                                    <input id="_createdOn" name="phoneNumber" type="date" />
-                                </div>
-                            </div>
-                        </div>
+        try{
+            await create(movieData)
 
-                       
-                        <div id="form-actions">
-                            <button id="action-save" className="btn" type="submit">Save</button>
-                            <button id="action-cancel" className="btn" type="button" onClick={onClose}>
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
+            navigate(`/Catalog`);
+        }
+        catch(err){
+            console.log(err);
+            navigate("/");
+        }
+    };
+    return(
+        <div className="create">
+            <h1> Add Movie </h1>
+            <form id="form" onSubmit={movieSubmitHandler}>
+            <section>
+                <h2>Title</h2>
+                <div className="input">
+                    <input id="title" name="title"></input>
                 </div>
-            </div>
-        </div>   
-        
- 
-    );
-};
+            </section>
+
+
+            <section>
+                <h2>Photo</h2>
+                <textarea id="img" name="img" placeholder="Photo Url"></textarea>
+            </section>
+            <section>
+                <h2>Description</h2>
+                <div className="description">
+                   <textarea id="description" name="description" placeholder="Enter the details of the movie"></textarea>
+                </div>
+            </section>
+                <input type="submit" className="button" value={"Add Movie"} />
+            
+            </form>
+        </div>
+    )
+}
