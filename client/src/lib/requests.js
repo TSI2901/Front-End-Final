@@ -1,55 +1,46 @@
-import { formatDate } from "../utils/dataUtil";
-import { uniqueID } from "../utils/idUtil";
+const buildOptions = (data) => {
+    const options = {};
 
-const baseUrl = 'http://localhost:3030/data/movies';
+    if (data) {
+        options.body = JSON.stringify(data);
+        options.headers = {
+            'content-type': 'application/json'
+        };
+    }
 
-export const getAll = async () => {
-    const response = await fetch(baseUrl);
-    const result = await response.json();
+    const token = JSON.parse(localStorage.getItem('auth'))?.accessToken;
 
-    const data = Object.values(result);
+    if (token) {
+        options.headers = {
+            ...options.headers,
+            'X-Authorization': token
+        };
+    }
 
-    return data;
+    return options;
 };
 
-export const getOne = async (movieId) => {
-    const response = await fetch(`${baseUrl}/${movieId}`);
-    const result = await response.json();
-
-    return result;
-};
-
-export const create = async (data) => {
-    const body = {
-        _id: uniqueID,
-        _ownerId: data.ownerId,
-        title: data.title,
-        description: data.description,
-        img: data.img,
-        _createdOn: formatDate(data._createdOn),
-        _id: data.id
-    };
-
-    const response = await fetch(baseUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    })
-
-    const result = await response.json();
-    console.log(result);
-
-    return result;
-};
-
-export const remove = async (movieId) => {
-    const response = await fetch(`${baseUrl}/${movieId}`, {
-        method: 'DELETE'
+const request = async (method, url, data) => {
+    const response = await fetch(url, {
+        ...buildOptions(data),
+        method,
     });
 
+    if (response.status === 204) {
+        return {};
+    }
+
     const result = await response.json();
+
+    if (!response.ok) {
+        throw result;
+    } 
 
     return result;
 };
+
+export const get = request.bind(null, 'GET');
+export const post = request.bind(null, 'POST');
+export const put = request.bind(null, 'PUT');
+export const remove = request.bind(null, 'DELETE');
+export const patch = request.bind(null, 'PATCH');
