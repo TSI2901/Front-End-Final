@@ -1,56 +1,74 @@
-import { useState, useEffect } from "react";
-import * as request from '../../lib/requests';
-import { formatDate } from '../../utils/dataUtil.js';
+import { Link, useNavigate } from "react-router-dom";       
+import { useContext, useEffect, useState } from "react";
+import AuthContext from "../../context/authContext";
+import { useParams } from "react-router-dom"
+import { remove } from "../../services/movieService";
+import { formatDate } from "../../utils/dataUtil";
+import { getOne } from "../../services/movieService";
+import './Details.css'
 
 
-const MovieDetails = ({
-    movieId,
-    onClose,
-}) => {
-    const [movie, setMovie] = useState({});
+
+export default function Details() {
+    const { id } = useParams();
+    const {userId} = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const [movie, setMovie] = useState({
+        title: '',
+        _ownerId: '',
+        img: '',
+        description: '',
+        _createdOn: ''
+    });
+
 
     useEffect(() => {
-        request.getOne(movieId)
-            .then(result => setMovie(result));
-    }, [movieId]);
+        getOne(id)
+            .then((result) => {
+                setMovie(result);
+            }).catch((e) => {
+                console.log(e);
+            });
+    }, [id]);
+    const deleteClickHandler = async () => {
+        console.log("ddd")
+        const hasConfirmed = confirm(`Are you sure you want to delete this movie "${movie.title}"?`);
+
+        if (hasConfirmed) {
+            await remove(id);
+
+            navigate('/Catalog');
+        }
+    }
+
 
     return (
-        <div className="overlay">
-            <div className="backdrop" onClick={onClose}></div>
-            <div className="modal">
-                <div className="detail-container">
-                    <header className="headers">
-                        <h2>Movie Details</h2>
-                        <button className="btn close" title ="Hide" onClick={onClose}>
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
-                                className="svg-inline--fa fa-xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                <path fill="currentColor"
-                                    d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z">
-                                </path>
-                            </svg>
-                        </button>
-                    </header>
-                    <div className="content">
-                        <div className="image-container">
-                            
-                        </div>
-                        <img src={movie.img} alt={movie.title}></img>
-                        <div className="user-details">
-                            <p>Movie Id: <strong>{movie._id}</strong></p>
-                            <p>
-                                Title:
-                                <strong> {movie.title} </strong>
-                            </p>
-                            <p>Description: <strong>{movie.description}</strong></p>
-
-                            <p>Created on: <strong>{formatDate(movie._createdOn)}</strong></p>
-                           
-                        </div>
-                    </div>
+        
+        <div className="details">
+            <h1>{movie.title}</h1>
+            <div className="content">
+                <div className="details-image-container">
+                    <img src={movie.img} alt={movie.title} />
                 </div>
+                <div className="details-body">
+                    
+                    <p><span>Description: </span> {movie.description}</p>
+                    <p><span>Added on: </span> {formatDate(movie._createdOn)}</p>
+                    <div className="btn-container">
+                <Link className="btn" to={`/Catalog`}>Go back</Link>
+                {movie._ownerId === userId &&
+                    <>
+                    <button className="btn"  title="Delete" onClick={deleteClickHandler}>Delete</button>
+                    <Link className="btn"to={`/${'Edit'}/${id}`}>Edit</Link>
+                    </>
+                }
+                </div>
+                </div>
+                
             </div>
+           
         </div>
-    );
-};
-
-export default MovieDetails;
+        
+    )
+}

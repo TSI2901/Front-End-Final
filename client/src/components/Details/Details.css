@@ -1,0 +1,40 @@
+.details{
+    align-self: center;
+    padding-top: 7em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4em;
+}
+
+.content{   
+    display: flex;
+    justify-content: space-between;
+    gap: 2em;
+}
+p {
+    width: 40%;
+    height: 50%;
+}
+img{
+    height: auto;
+    width: 50vh;
+}
+.details-body{
+    padding-top: 3em;
+    display: flex;
+    flex-direction: column;
+    gap: 5em;
+}
+.btn-container{
+    align-self: center;
+    display: flex;
+    gap: 1em;
+    align-items: flex-start;
+}
+.btn{
+    border: solid white 2px;
+    width: 4em;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+}
