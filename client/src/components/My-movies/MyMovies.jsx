@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import CatalogItem from '../CatalogItem/CatalogItem.jsx';
-import './Catalog.css'
+import './MyMovies.css'
 
 import { getAllByOwner } from '../../services/movieService.js';
 
@@ -10,8 +10,9 @@ import  AuthContext  from '../../context/authContext.jsx'
 
  
 
-function Catalog() {
+function MyMovies() {
     const [movies, setMovies] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const {userId} = useContext(AuthContext)
     useEffect(() => {
         setIsLoading(true);
@@ -42,4 +43,4 @@ function Catalog() {
         </div>
     )
 }
-export default Catalog
+export default MyMovies

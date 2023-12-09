@@ -1,0 +1,23 @@
+body{
+    display: flex;
+    align-items: center;
+}
+.catalog{
+    padding-top: 15em;
+    min-width: 320px;
+    min-height: 100vh;
+    display: flex;
+    border: solid white 2px;
+   
+    gap: 1em;
+    flex-wrap: nowrap;
+}
+
+.catalog-item{
+    width: 30em;
+    height: 12em;
+}
+.catalog button{
+    align-self: center;
+    
+}
